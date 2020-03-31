@@ -41,11 +41,13 @@
 		EnableInterrupts();           // enable interrupts for the grader
 		while(1)
 		{
-			Delay100ms(100);
+			
 			SW1 = GPIO_PORTF_DATA_R & 0x10;  // Enable port Port F4 as a switch
+			
 			if(SW1 == 0)
 			{ 
 				GPIO_PORTF_DATA_R ^=  0x04;
+				Delay100ms(1);	
 			}
 			else
 			{
@@ -62,25 +64,23 @@
 		delay = SYSCTL_RCGC2_R;             //2  impart delary till 2 clock cycles till it settles
 		GPIO_PORTF_AMSEL_R = 0x00;         // 3) disable analog function
 		GPIO_PORTF_PCTL_R = 0x00000000;   // 4) GPIO clear bit PCTL  
-		GPIO_PORTF_DIR_R = 0x02;          // 5) PF4 input, PF2 output   
+		GPIO_PORTF_DIR_R |= 0x04;          // 5) PF4 input, PF2 output   
 		GPIO_PORTF_AFSEL_R = 0x00;        // 6) no alternate function
-		GPIO_PORTF_DEN_R = 0x02;          // 7) enable digital pins PF4-PF0    
-		GPIO_PORTF_PUR_R = 0x10;          //8)enable pullup resistors on PF4   	
-		GPIO_PORTF_DATA_R =0x04;
+		GPIO_PORTF_DEN_R |= 0x14;          // 7) enable digital pins PF4-PF0    
+		GPIO_PORTF_PUR_R |= 0x10;          //8)enable pullup resistors on PF4   	
+		GPIO_PORTF_DATA_R |=0x04;
 		
 	}
 
 	void Delay100ms(unsigned long time)
-	{
-		unsigned long i;
-		while(time > 0)
-		{
-			 i = 1333333;  // this number means 100ms
-			while(i > 0)
-			{
-				i = i - 1;
-			}
-			time = time - 1; // decrements every 100 ms
-		}
-		
-	}
+{
+  unsigned long i;
+  while(time > 0){
+    i = 1333333;  // this number means 100ms
+    while(i > 0){
+      i = i - 1;
+    }
+    time = time - 1; // decrements every 100 ms
+  }
+}
+
