@@ -13,6 +13,8 @@
 // built-in connection: PF3 connected to green LED
 // built-in connection: PF4 connected to negative logic momentary switch, SW1
 
+
+
 	#include "TExaS.h"
 	#define GPIO_PORTF_DATA_R       (*((volatile unsigned long *)0x400253FC))
 	#define GPIO_PORTF_DIR_R        (*((volatile unsigned long *)0x40025400))
@@ -30,7 +32,7 @@
 	void EnableInterrupts(void);  // Enable interrupts
 	void PortF_Init(void);
 	void Delay100ms(unsigned long time);
-	unsigned long SW1,SW2;
+	unsigned long SW1;
 
 	int main(void){ unsigned long volatile delay;
 		TExaS_Init(SW_PIN_PF4, LED_PIN_PF2);  // activate grader and set system clock to 80 MHz
@@ -40,6 +42,15 @@
 		while(1)
 		{
 			Delay100ms(100);
+			SW1 = GPIO_PORTF_DATA_R & 0x10;  // Enable port Port F4 as a switch
+			if(SW1 == 0)
+			{ 
+				GPIO_PORTF_DATA_R ^=  0x04;
+			}
+			else
+			{
+				GPIO_PORTF_DATA_R = 0x04;
+      }				
 			
 		}
 	}
